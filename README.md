@@ -16,4 +16,5 @@ Tech Stack
     Database: (Your Database here, e.g., SQL Server, MySQL, SQLite)
     IDE: Visual Studio / VS Code
 
-    ![CollegeAPI](https://github.com/user-attachments/assets/4fc87773-867e-48e8-ae54-0437a9af09fb)
+
+![CollegeAPI](https://github.com/user-attachments/assets/4fc87773-867e-48e8-ae54-0437a9af09fb)
