@@ -1,20 +1,45 @@
 # CollegeAPI
 
-CollegeAPI is a RESTful Web API developed using ASP.NET Core. It provides CRUD operations to manage student data, allowing clients to retrieve, add, update, and delete student information. The API is documented with Swagger for easy testing and exploration of each endpoint.
-Features
+CollegeAPI is a RESTful ASP.NET Core Web API for managing student records. It supports creating, reading, updating, and deleting student data, and it exposes the API through Swagger for easy test and exploration.
 
-    Retrieve a list of all students.
-    Retrieve details of a specific student by ID.
-    Add a new student.
-    Update an existing student's information.
-    Delete a specific student by ID.
+## Features
 
-Tech Stack
+- Retrieve all students
+- Retrieve a single student by ID
+- Create a new student
+- Update an existing student
+- Delete a student
 
-    Framework: ASP.NET Core Web API
-    Documentation: Swagger UI
-    Database: (Your Database here, e.g., SQL Server, MySQL, SQLite)
-    IDE: Visual Studio / VS Code
+## Tech stack
 
+- ASP.NET Core Web API
+- Entity Framework Core
+- SQLite for local development
+- Swagger / OpenAPI
+
+## Run locally
+
+```bash
+dotnet restore
+dotnet build
+dotnet run
+```
+
+Then open:
+
+- Swagger UI: http://localhost:5100/swagger
+- Students API: http://localhost:5100/api/students
+
+## Example payload
+
+```json
+{
+  "firstName": "Alice",
+  "lastName": "Johnson",
+  "email": "alice@example.com",
+  "phone": "1234567890",
+  "dateOfBirth": "2000-01-15T00:00:00"
+}
+```
 
 ![CollegeAPI](https://github.com/user-attachments/assets/4fc87773-867e-48e8-ae54-0437a9af09fb)
