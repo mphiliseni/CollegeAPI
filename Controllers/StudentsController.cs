@@ -1,1 +1,100 @@
- CancellationToken)</ApplicationData></E2ETraceEvent><E2ETraceEvent xmlns="http://schemas.microsoft.com/2004/06/E2ETraceEvent"><System xmlns="http://schemas.microsoft.com/2004/06/windows/eventlog/system"><EventID>0</EventID><Type>3</Type><SubType Name="Transfer">0</SubType><Level>255</Level><TimeCreated SystemTime="2024-10-15T19:58:07.4213978Z" /><Source Name="WebTools.HtmlDelegationLanguageServer" /><Correlation ActivityID="{45058c08-8a53-4fb8-8045-c26122b26e04}" RelatedActivityID="{eb4b078f-c0f1-4e99-884c-f4cde906712f}" /><Execution ProcessName="devenv" ProcessID="9412" ThreadID="195" /><Channel/><Computer>LAPTOP-C7B1RTSD</Computer></System><ApplicationData>Transfer</ApplicationData></E2ETraceEvent><E2ETraceEvent xmlns="http://schemas.microsoft.com/2004/06/E2ETraceEvent"><System xmlns="http://schemas.microsoft.com/2004/06/windows/eventlog/system"><EventID>0</EventID><Type>3</Type><SubType Name="Start">0</SubType><Level>255</Level><TimeCreated SystemTime="2024-10-15T19:58:07.4213978Z" /><Source Name="WebTools.HtmlDelegationLanguageServer" /><Correlation ActivityID="{eb4b078f-c0f1-4e99-884c-f4cde906712f}" /><Execution ProcessName="devenv" ProcessID="9412" ThreadID="195" /><Channel/><Computer>LAPTOP-C7B1RTSD</Computer></System><ApplicationData>textDocument/definition</ApplicationData></E2ETraceEvent><E2ETraceEvent xmlns="http://schemas.microsoft.com/2004/06/E2ETraceEvent"><System xmlns="http://schemas.microsoft.com/2004/06/windows/eventlog/system"><EventID>0</EventID><Type>3</Type><SubType Name="Stop">0</SubType><Level>255</Level><TimeCreated SystemTime="2024-10-15T19:58:07.4213978Z" /><Source Name="WebTools.HtmlDelegationLanguageServer" /><Correlation ActivityID="{eb4b078f-c0f1-4e99-884c-f4cde906712f}" /><Execution ProcessName="devenv" ProcessID="9412" ThreadID="79" /><Channel/><Computer>LAPTOP-C7B1RTSD</Computer></System><ApplicationData>textDocument/definition</ApplicationData></E2ETraceEvent><E2ETraceEvent xmlns="http://schemas.microsoft.com/2004/06/E2ETraceEvent"><System xmlns="http://schemas.microsoft.com/2004/06/windows/eventlog/system"><EventID>0</EventID><Type>3</Type><SubType Name="Transfer">0</SubType><Level>255</Level><TimeCreated SystemTime="2024-10-15T19:58:07.4213978Z" /><Source Name="WebTools.HtmlDelegationLanguageServer" /><Correlation ActivityID="{eb4b078f-c0f1-4e99-884c-f4cde906712f}" RelatedActivityID="{45058c08-8a53-4fb8-8045-c26122b26e04}" /><Execution ProcessName="devenv" ProcessID="9412" ThreadID="79" /><Channel/><Computer>LAPTOP-C7B1RTSD</Computer></System><ApplicationData>Transfer</ApplicationData></E2ETraceEvent><E2ETraceEvent xmlns="http://schemas.microsoft.com/2004/06/E2ETraceEvent"><System xmlns="http://schemas.m
+using CollegeAPI.Data;
+using CollegeAPI.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace CollegeAPI.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class StudentsController : ControllerBase
+    {
+        private readonly StudentDbContext _context;
+
+        public StudentsController(StudentDbContext context)
+        {
+            _context = context;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
+        {
+            return await _context.Students.ToListAsync();
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<Student>> GetStudent(int id)
+        {
+            var student = await _context.Students.FindAsync(id);
+
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            return student;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Student>> PostStudent(Student student)
+        {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            _context.Students.Add(student);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetStudent), new { id = student.Id }, student);
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> PutStudent(int id, Student student)
+        {
+            if (id != student.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(student).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!StudentExists(id))
+                {
+                    return NotFound();
+                }
+
+                throw;
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteStudent(int id)
+        {
+            var student = await _context.Students.FindAsync(id);
+
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            _context.Students.Remove(student);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool StudentExists(int id)
+        {
+            return _context.Students.Any(e => e.Id == id);
+        }
+    }
+}
